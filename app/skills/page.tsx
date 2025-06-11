@@ -1,59 +1,29 @@
 "use client"
-
-import { Canvas } from "@react-three/fiber"
-import { OrbitControls, Environment, Float } from "@react-three/drei"
-import { Suspense, useRef } from "react"
-import { useFrame } from "@react-three/fiber"
-import type * as THREE from "three"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Code, Database, Palette, Globe, Smartphone, Cloud } from "lucide-react"
-import { useTheme } from "next-themes"
 import { PageTransition } from "@/components/page-transition"
 
-function AnimatedCube({ position, color }: { position: [number, number, number]; color: string }) {
-  const meshRef = useRef<THREE.Mesh>(null)
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += 0.01
-      meshRef.current.rotation.y += 0.01
-      meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime + position[0]) * 0.1
-    }
-  })
-
+function SimpleAnimatedBackground() {
   return (
-    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-      <mesh ref={meshRef} position={position}>
-        <boxGeometry args={[0.3, 0.3, 0.3]} />
-        <meshStandardMaterial color={color} metalness={0.8} roughness={0.2} />
-      </mesh>
-    </Float>
+    <div className="absolute inset-0">
+      <div className="absolute top-1/4 left-1/4 w-8 h-8 bg-blue-500/20 rounded animate-pulse" />
+      <div className="absolute top-1/3 right-1/4 w-6 h-6 bg-purple-500/20 rounded-full animate-bounce" />
+      <div
+        className="absolute bottom-1/3 left-1/3 w-10 h-10 bg-cyan-500/20 rounded animate-spin"
+        style={{ animationDuration: "8s" }}
+      />
+      <div className="absolute top-1/2 right-1/3 w-7 h-7 bg-orange-500/20 rounded-full animate-pulse" />
+      <div className="absolute bottom-1/4 right-1/4 w-9 h-9 bg-red-500/20 rounded animate-bounce" />
+    </div>
   )
 }
 
 function Hero() {
-  const { resolvedTheme } = useTheme()
-  const isDarkMode = resolvedTheme === "dark"
-
   return (
     <section className="relative pt-24 pb-16 px-4 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-blue-900 dark:to-indigo-900 overflow-hidden">
-      <div className="absolute inset-0">
-        <Canvas camera={{ position: [0, 0, 5] }}>
-          <Suspense fallback={null}>
-            <ambientLight intensity={isDarkMode ? 0.3 : 0.5} />
-            <pointLight position={[10, 10, 10]} intensity={1} />
-            <AnimatedCube position={[-2, 1, -1]} color="#3b82f6" />
-            <AnimatedCube position={[2, -1, -2]} color="#8b5cf6" />
-            <AnimatedCube position={[0, 2, -3]} color="#06b6d4" />
-            <AnimatedCube position={[-3, -2, -1]} color="#f59e0b" />
-            <AnimatedCube position={[3, 1, -2]} color="#ef4444" />
-            <Environment preset={isDarkMode ? "night" : "city"} />
-            <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
-          </Suspense>
-        </Canvas>
-      </div>
+      <SimpleAnimatedBackground />
 
       <div className="relative z-10 max-w-6xl mx-auto text-center">
         <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">

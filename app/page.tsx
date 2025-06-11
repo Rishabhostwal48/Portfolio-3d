@@ -1,10 +1,6 @@
 "use client"
 
-import { Canvas } from "@react-three/fiber"
-import { OrbitControls, Environment, Float, Text3D } from "@react-three/drei"
-import { Suspense, useRef, useEffect, useState } from "react"
-import { useFrame } from "@react-three/fiber"
-import type * as THREE from "three"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -17,98 +13,41 @@ import { FlowingText, FlowingTitle } from "@/components/flowing-text"
 import { RiverHoverEffect } from "@/components/river-effects"
 import { motion } from "framer-motion"
 
-function FloatingCube({
-  position,
-  color,
-  speed = 1,
-  isDarkMode = false,
-}: {
-  position: [number, number, number]
-  color: string
-  speed?: number
-  isDarkMode?: boolean
-}) {
-  const meshRef = useRef<THREE.Mesh>(null)
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += 0.01 * speed
-      meshRef.current.rotation.y += 0.01 * speed
-      meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * speed) * 0.2
-    }
-  })
-
+// Simple 3D-like visual component without Three.js
+function Simple3DBackground() {
   return (
-    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-      <mesh ref={meshRef} position={position}>
-        <boxGeometry args={[0.5, 0.5, 0.5]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
-    </Float>
-  )
-}
-
-function FloatingSphere({
-  position,
-  color,
-  speed = 1,
-}: {
-  position: [number, number, number]
-  color: string
-  speed?: number
-}) {
-  const meshRef = useRef<THREE.Mesh>(null)
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += 0.005 * speed
-      meshRef.current.rotation.z += 0.005 * speed
-      meshRef.current.position.x = position[0] + Math.cos(state.clock.elapsedTime * speed) * 0.3
-    }
-  })
-
-  return (
-    <Float speed={1.5} rotationIntensity={2} floatIntensity={1}>
-      <mesh ref={meshRef} position={position}>
-        <sphereGeometry args={[0.3, 32, 32]} />
-        <meshStandardMaterial color={color} metalness={0.8} roughness={0.2} />
-      </mesh>
-    </Float>
-  )
-}
-
-function Scene3D({ isDarkMode }: { isDarkMode: boolean }) {
-  return (
-    <>
-      <ambientLight intensity={isDarkMode ? 0.3 : 0.5} />
-      <pointLight position={[10, 10, 10]} intensity={isDarkMode ? 0.8 : 1} />
-      <pointLight position={[-10, -10, -10]} intensity={isDarkMode ? 0.3 : 0.5} color="#3b82f6" />
-
-      {/* Floating geometric shapes with cohesive color scheme */}
-      <FloatingCube position={[-3, 2, -2]} color="#3b82f6" speed={0.8} isDarkMode={isDarkMode} />
-      <FloatingCube position={[3, -1, -1]} color="#06b6d4" speed={1.2} isDarkMode={isDarkMode} />
-      <FloatingSphere position={[-2, -2, -3]} color="#8b5cf6" speed={0.6} />
-      <FloatingSphere position={[2, 3, -2]} color="#f59e0b" speed={1.4} />
-      <FloatingCube position={[0, -3, -4]} color="#ef4444" speed={1.0} isDarkMode={isDarkMode} />
-      <FloatingSphere position={[-4, 0, -1]} color="#10b981" speed={0.9} />
-
-      {/* 3D Text */}
-      <Float speed={1} rotationIntensity={0.5} floatIntensity={0.5}>
-        <Text3D font="/fonts/Geist_Bold.json" size={0.8} height={0.1} position={[-2.5, 0, 0]}>
-          {"PORTFOLIO"}
-          <meshStandardMaterial color={isDarkMode ? "#e2e8f0" : "#ffffff"} metalness={0.3} roughness={0.4} />
-        </Text3D>
-      </Float>
-
-      <Environment preset={isDarkMode ? "night" : "city"} />
-      <OrbitControls enableZoom={false} enablePan={false} maxPolarAngle={Math.PI / 2} />
-    </>
+    <div className="absolute inset-0 overflow-hidden">
+      {/* Floating geometric shapes using CSS animations */}
+      <div
+        className="absolute top-1/4 left-1/4 w-16 h-16 bg-blue-500/20 rounded-lg animate-bounce"
+        style={{ animationDelay: "0s", animationDuration: "3s" }}
+      />
+      <div
+        className="absolute top-1/3 right-1/4 w-12 h-12 bg-purple-500/20 rounded-full animate-pulse"
+        style={{ animationDelay: "1s", animationDuration: "4s" }}
+      />
+      <div
+        className="absolute bottom-1/3 left-1/3 w-20 h-20 bg-cyan-500/20 rounded-lg animate-spin"
+        style={{ animationDelay: "2s", animationDuration: "8s" }}
+      />
+      <div
+        className="absolute top-1/2 right-1/3 w-14 h-14 bg-orange-500/20 rounded-full animate-bounce"
+        style={{ animationDelay: "0.5s", animationDuration: "3.5s" }}
+      />
+      <div
+        className="absolute bottom-1/4 right-1/4 w-18 h-18 bg-red-500/20 rounded-lg animate-pulse"
+        style={{ animationDelay: "1.5s", animationDuration: "5s" }}
+      />
+      <div
+        className="absolute top-3/4 left-1/4 w-16 h-16 bg-green-500/20 rounded-full animate-spin"
+        style={{ animationDelay: "3s", animationDuration: "6s" }}
+      />
+    </div>
   )
 }
 
 function Hero() {
   const { resolvedTheme } = useTheme()
-  const isDarkMode = resolvedTheme === "dark"
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -121,13 +60,7 @@ function Hero() {
 
   return (
     <FlowingSection className="relative h-screen w-full overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-blue-900 dark:to-indigo-900 transition-colors duration-500">
-      {mounted && (
-        <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-          <Suspense fallback={null}>
-            <Scene3D isDarkMode={isDarkMode} />
-          </Suspense>
-        </Canvas>
-      )}
+      {mounted && <Simple3DBackground />}
 
       {/* Overlay content */}
       <div className="absolute inset-0 flex items-center justify-center pt-16">
@@ -229,9 +162,6 @@ function Hero() {
 }
 
 function AboutPreview() {
-  const { resolvedTheme } = useTheme()
-  const isDarkMode = resolvedTheme === "dark"
-
   return (
     <section id="about" className="py-20 px-4 bg-white dark:bg-gray-900 transition-colors duration-500">
       <div className="max-w-6xl mx-auto">
@@ -246,13 +176,13 @@ function AboutPreview() {
           <div className="space-y-6">
             <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Crafting Digital Experiences</h3>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              With over 5 years of experience in modern web technologies, I specialize in creating immersive 3D web
-              experiences using React, Next.js, and Three.js. My passion lies in pushing the boundaries of what's
-              possible on the web.
+              With over 5 years of experience in modern web technologies, I specialize in creating immersive web
+              experiences using React, Next.js, and modern web technologies. My passion lies in pushing the boundaries
+              of what's possible on the web.
             </p>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              When I'm not coding, you'll find me exploring the latest in web3, AI, and creative coding. I believe in
-              the power of technology to create meaningful connections and solve real-world problems.
+              When I'm not coding, you'll find me exploring the latest in web development, AI, and creative coding. I
+              believe in the power of technology to create meaningful connections and solve real-world problems.
             </p>
             <Link href="/about">
               <Button className="bg-blue-600 hover:bg-blue-700 text-white">Learn More About Me</Button>
@@ -260,24 +190,22 @@ function AboutPreview() {
           </div>
 
           <div className="relative">
-            <div className="w-full h-96 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-800 rounded-2xl overflow-hidden shadow-2xl">
-              <Canvas camera={{ position: [0, 0, 3] }}>
-                <Suspense fallback={null}>
-                  <ambientLight intensity={isDarkMode ? 0.4 : 0.6} />
-                  <pointLight position={[5, 5, 5]} intensity={isDarkMode ? 0.8 : 1} />
-                  <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-                    <mesh>
-                      <torusKnotGeometry args={[0.8, 0.3, 100, 16]} />
-                      <meshStandardMaterial
-                        color={isDarkMode ? "#a78bfa" : "#ffffff"}
-                        metalness={isDarkMode ? 0.6 : 0.8}
-                        roughness={0.2}
-                      />
-                    </mesh>
-                  </Float>
-                  <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={2} />
-                </Suspense>
-              </Canvas>
+            <div className="w-full h-96 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-800 rounded-2xl overflow-hidden shadow-2xl flex items-center justify-center">
+              {/* Simple animated shapes instead of Three.js */}
+              <div className="relative w-32 h-32">
+                <div
+                  className="absolute inset-0 bg-white/20 rounded-full animate-spin"
+                  style={{ animationDuration: "8s" }}
+                />
+                <div
+                  className="absolute inset-4 bg-white/30 rounded-full animate-pulse"
+                  style={{ animationDuration: "3s" }}
+                />
+                <div
+                  className="absolute inset-8 bg-white/40 rounded-full animate-bounce"
+                  style={{ animationDuration: "2s" }}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -360,25 +288,22 @@ function SkillsPreview() {
 function ProjectsPreview() {
   const projects = [
     {
-      title: "3D E-commerce Platform",
-      description: "Interactive 3D product visualization with AR capabilities",
-      tech: ["Next.js", "Three.js", "WebXR"],
-      image: "/placeholder.svg?height=300&width=400",
+      title: "Manglanam Naturals - E-commerce Platform",
+      description: "Premium spice emporium with full e-commerce functionality",
+      tech: ["Next.js", "React", "E-commerce"],
+      gradient: "from-orange-500 to-red-600",
+    },
+    {
+      title: "Personal Portfolio Website",
+      description: "Modern portfolio with advanced animations and interactions",
+      tech: ["React", "Next.js", "Framer Motion"],
       gradient: "from-blue-500 to-purple-600",
     },
     {
-      title: "AI-Powered Dashboard",
-      description: "Real-time analytics dashboard with machine learning insights",
-      tech: ["React", "Python", "TensorFlow"],
-      image: "/placeholder.svg?height=300&width=400",
+      title: "Interactive Web Application",
+      description: "Dynamic web application with real-time features",
+      tech: ["React", "Next.js", "Real-time"],
       gradient: "from-green-500 to-teal-600",
-    },
-    {
-      title: "Metaverse Gallery",
-      description: "Virtual art gallery with NFT integration",
-      tech: ["Three.js", "Web3", "Solidity"],
-      image: "/placeholder.svg?height=300&width=400",
-      gradient: "from-purple-500 to-pink-600",
     },
   ]
 
