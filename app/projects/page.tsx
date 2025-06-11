@@ -18,7 +18,7 @@ const projects = [
       "A comprehensive e-commerce platform for Manglanam Naturals, a premium spice company. Features include product browsing, shopping cart functionality, recipe integration, and a beautiful UI showcasing spice products with rich imagery and smooth user experience.",
     tech: ["React", "Next.js", "E-commerce", "Responsive Design", "SEO Optimization"],
     category: "E-commerce",
-    image: "/images/manglanam-naturals.jpg",
+    image: "/placeholder.svg?height=300&width=500&text=Manglanam+Naturals",
     gradient: "from-orange-500 to-red-600",
     demo: "https://manglanam.com",
     featured: true,
@@ -33,7 +33,7 @@ const projects = [
       "A sophisticated personal portfolio website featuring modern design principles, smooth animations, loading states, and interactive elements. Built with performance and user experience in mind, showcasing projects and skills in an engaging way.",
     tech: ["Next.js", "React", "Framer Motion", "Tailwind CSS", "TypeScript"],
     category: "Portfolio",
-    image: "/images/portfolio-loading.jpg",
+    image: "/placeholder.svg?height=300&width=500&text=Portfolio+Website",
     gradient: "from-blue-500 to-purple-600",
     demo: "https://portfolio-rishabhostwal.vercel.app",
     featured: true,
@@ -147,38 +147,40 @@ function ProjectCard({ project }: { project: (typeof projects)[0] }) {
   return (
     <Card className="group overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2 dark:bg-gray-800 dark:border-gray-700 border-0 shadow-lg">
       <div className="relative overflow-hidden">
-        {project.image.startsWith("/images/") ? (
-          <div className="relative w-full h-64">
-            <Image
-              src={project.image || "/placeholder.svg"}
-              alt={project.title}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          </div>
-        ) : (
-          <div
-            className={`w-full h-64 bg-gradient-to-br ${project.gradient} flex items-center justify-center relative`}
-          >
-            <div className="text-white text-8xl font-bold opacity-10 absolute">{project.id}</div>
-          </div>
-        )}
+        <div className={`w-full h-64 bg-gradient-to-br ${project.gradient} flex items-center justify-center relative`}>
+          {project.image.startsWith("/images/") ? (
+            <div className="absolute inset-0 z-10">
+              <div className="relative w-full h-full">
+                <Image
+                  src={project.image || "/placeholder.svg"}
+                  alt={project.title}
+                  fill
+                  className="object-cover"
+                  onError={(e) => {
+                    // Fallback to gradient background if image fails to load
+                    e.currentTarget.style.display = "none"
+                  }}
+                />
+              </div>
+            </div>
+          ) : null}
+          <div className="text-white text-8xl font-bold opacity-10 absolute">{project.id}</div>
+        </div>
 
-        <div className="absolute top-4 left-4 flex gap-2">
+        <div className="absolute top-4 left-4 flex gap-2 z-20">
           {project.featured && <Badge className="bg-yellow-500 text-yellow-900">Featured</Badge>}
           <Badge className={project.status === "Live" ? "bg-green-500 text-white" : "bg-blue-500 text-white"}>
             {project.status}
           </Badge>
         </div>
 
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 z-20">
           <Badge variant="outline" className="bg-white/90 text-gray-800">
             {project.year}
           </Badge>
         </div>
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-4">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-4 z-20">
           <div className="flex gap-2">
             {project.github && (
               <Button size="sm" className="bg-white/20 backdrop-blur-sm hover:bg-white/30" asChild>
