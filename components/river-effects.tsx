@@ -36,17 +36,20 @@ export function RiverScrollEffect() {
       for (let i = 0; i < particles; i++) {
         const x = (i / particles) * canvas.width
         const y = canvas.height / 2 + Math.sin(x * 0.01 + time * 0.02) * 50
-        const size = Math.sin(x * 0.02 + time * 0.03) * 3 + 2
+        const size = Math.max(1, Math.sin(x * 0.02 + time * 0.03) * 3 + 2) // Ensure size is always positive
 
-        // Create gradient for river effect
-        const gradient = ctx.createRadialGradient(x, y, 0, x, y, size * 2)
+        // Create gradient for river effect with positive radius values
+        const innerRadius = 0
+        const outerRadius = Math.max(size * 2, 1) // Ensure outer radius is always positive and greater than inner
+
+        const gradient = ctx.createRadialGradient(x, y, innerRadius, x, y, outerRadius)
         gradient.addColorStop(0, "rgba(59, 130, 246, 0.3)")
         gradient.addColorStop(0.5, "rgba(147, 51, 234, 0.2)")
         gradient.addColorStop(1, "rgba(59, 130, 246, 0)")
 
         ctx.fillStyle = gradient
         ctx.beginPath()
-        ctx.arc(x, y, size, 0, Math.PI * 2)
+        ctx.arc(x, y, Math.max(size, 1), 0, Math.PI * 2) // Ensure arc radius is positive
         ctx.fill()
       }
 
