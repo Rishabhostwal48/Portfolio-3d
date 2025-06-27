@@ -35,7 +35,7 @@ const projects = [
     category: "Portfolio",
     image: "/placeholder.svg?height=300&width=500&text=Portfolio+Website",
     gradient: "from-blue-500 to-purple-600",
-    demo: "https://portfolio-rishabhostwal.vercel.app",
+    demo: "https://rishabhostwal.vercel.app",
     featured: true,
     year: "2024",
     status: "Live",
